@@ -10,12 +10,14 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.springframework.http.HttpMethod;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
+@lombok.Data
 @Table(name = "rest")
 @Entity
 @Getter
@@ -39,34 +41,39 @@ public class Rest implements Serializable {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "main_path_url", nullable = false)
-  private String mainPathUrl;
-
   @Column(name = "path_url", nullable = false)
   private String pathUrl;
 
   @Column(name = "method", nullable = false)
-  private String method;
+  @Enumerated(EnumType.STRING)
+  private HttpMethod method;
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "request_body_or_params", nullable = false)
-  private Map<String, Object> requestBodyOrParams;
+  @Column(columnDefinition = "json", name = "request_body", nullable = false)
+  private Map<String, Object> requestBody;
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "success_header", nullable = false)
-  private Map<String, Object> successHeader;
+  @Column(columnDefinition = "json", name = "request_params", nullable = false)
+  private Map<String, Object> requestParams;
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "success_body", nullable = false)
-  private Map<String, Object> successBody;
+  @Column(columnDefinition = "json", name = "success_response_header", nullable = false)
+  private Map<String, Object> successResponseHeader;
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "fail_header", nullable = false)
-  private Map<String, Object> failHeader;
+  @Column(columnDefinition = "json", name = "success_response_body", nullable = false)
+  private Map<String, Object> successResponseBody;
+
+  @Column(name = "is_random_success_response_body", nullable = false)
+  private boolean randomSuccessResponseBody;
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "fail_body", nullable = false)
-  private Map<String, Object> failBody;
+  @Column(columnDefinition = "json", name = "fail_response_header", nullable = false)
+  private Map<String, Object> failResponseHeader;
+
+  @Type(type = "jsonb")
+  @Column(columnDefinition = "json", name = "fail_response_body", nullable = false)
+  private Map<String, Object> failResponseBody;
 
   @Column(name = "created_at")
   private long createdAt;
