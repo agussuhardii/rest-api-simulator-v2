@@ -1,4 +1,4 @@
-package com.agussuhardi.restapisimulator.security;
+package com.agussuhardi.restapisimulator.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,7 +23,7 @@ public class ConvertUtil {
     return mapper.convertValue(object, new TypeReference<>() {});
   }
 
-  public static Map<String, Object> jsonToMap(String json){
+  public static Map<String, Object> jsonToMap(String json) {
     final ObjectMapper mapper = new ObjectMapper();
     try {
       return mapper.readValue(json, new TypeReference<>() {});
