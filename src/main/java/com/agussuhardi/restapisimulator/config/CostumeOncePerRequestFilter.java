@@ -1,6 +1,7 @@
 package com.agussuhardi.restapisimulator.config;
 
 import com.agussuhardi.restapisimulator.repository.RestRepository;
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-//@Configuration
+@Configuration
 @Slf4j
 @RequiredArgsConstructor
 public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
@@ -42,6 +44,8 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
     var requestMethod = HttpMethod.resolve(httpServletRequest.getMethod());
     var requestURI = requestWrapper.getRequestURI();
     var optionalRest = restRepository.getUrl(requestMethod, requestURI);
+
+    log.info("request =>{URI=>{}, Method=>{}}", requestURI, requestMethod);
     if (optionalRest.isEmpty()) {
 
       responseWrapper.setStatus(HttpStatus.NOT_FOUND.value());
@@ -54,8 +58,96 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       filterChain.doFilter(requestWrapper, responseWrapper);
       return;
     }
+    var rest = optionalRest.get();
+
+    //  1.  validate headers
+    Map<String, String> request_headers = new HashMap<>();
+    var headerNames = Collections.list(requestWrapper.getHeaderNames());
+    for (var headerName : headerNames) {
+      request_headers.put(headerName, requestWrapper.getHeader(headerName));
+    }
+
+    for (var restHeader : rest.getRequestHeaders().entrySet()) {
+      var existHeader = false;
+      for (var requestHeader : request_headers.entrySet()) {
+        if (restHeader.getKey().equalsIgnoreCase(requestHeader.getKey())
+            && restHeader.getValue().equalsIgnoreCase(requestHeader.getValue())) {
+          existHeader = true;
+          break;
+        }
+      }
+
+      // fail response by header not valid
+      if (!existHeader) {
+
+        responseWrapper.setStatus(rest.getFailResponseCode());
+        responseWrapper.setContentType(APPLICATION_JSON_VALUE);
+        responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
+
+        for (var header : rest.getRequestHeaders().entrySet()) {
+          responseWrapper.addHeader(header.getKey(), header.getValue());
+        }
+
+        responseWrapper.copyBodyToResponse();
+        filterChain.doFilter(requestWrapper, responseWrapper);
+        return;
+      }
+    }
+    //    end validate headers
+
+    // 2.   validate params
+    for (var restParam : rest.getRequestParams().entrySet()) {
+      var existParam = false;
+      for (var requestParam : requestWrapper.getParameterMap().entrySet()) {
+        if (restParam.getKey().equalsIgnoreCase(requestParam.getKey())
+            && Arrays.equals(restParam.getValue(), requestParam.getValue())) {
+          existParam = true;
+          break;
+        }
+      }
+
+      if (!existParam) {
+
+        responseWrapper.setStatus(rest.getFailResponseCode());
+        responseWrapper.setContentType(APPLICATION_JSON_VALUE);
+        responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
+
+        for (var header : rest.getRequestHeaders().entrySet()) {
+          responseWrapper.addHeader(header.getKey(), header.getValue());
+        }
+
+        responseWrapper.copyBodyToResponse();
+        filterChain.doFilter(requestWrapper, responseWrapper);
+        return;
+      }
+    }
+
+    // 3.   validate body
+    if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
+
+      var requestBody =
+          new String(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding());
+      var restRequestBody = ConvertUtil.mapToJson(rest.getRequestBody());
+     log.info("request=>{}", requestBody);
+     log.info("rest=>{}", restRequestBody);
+
+      if (!requestBody.equals(restRequestBody)) {
+        responseWrapper.setStatus(rest.getFailResponseCode());
+        responseWrapper.setContentType(APPLICATION_JSON_VALUE);
+        responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
+
+        for (var header : rest.getRequestHeaders().entrySet()) {
+          responseWrapper.addHeader(header.getKey(), header.getValue());
+        }
+
+        responseWrapper.copyBodyToResponse();
+        filterChain.doFilter(requestWrapper, responseWrapper);
+        return;
+      }
+    }
 
     var requestParams = requestWrapper.getParameterMap();
+
     Map<String, Object> requestBody = new HashMap<>();
 
     if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {

@@ -46,10 +46,10 @@ public class Rest implements Serializable {
   @Enumerated(EnumType.STRING)
   private HttpMethod method;
 
-    @Type(type = "jsonb")
-//  @Convert(converter = JsonConverter.class)
+  @Type(type = "jsonb")
+  //  @Convert(converter = JsonConverter.class)
   @Column(columnDefinition = "jsonb")
-  private Map<String, Object> requestHeaders = new HashMap<>();
+  private Map<String, String> requestHeaders = new HashMap<>();
 
   @Type(type = "jsonb")
   //  @Convert(converter = JsonConverter.class)
@@ -59,7 +59,7 @@ public class Rest implements Serializable {
   @Type(type = "jsonb")
   //  @Convert(converter = JsonConverter.class)
   @Column(columnDefinition = "jsonb")
-  private Map<String, Object> requestParams = new HashMap<>();
+  private Map<String, String[]> requestParams = new HashMap<>();
 
   @Type(type = "jsonb")
   //  @Convert(converter = JsonConverter.class)
@@ -89,4 +89,13 @@ public class Rest implements Serializable {
 
   @Column(name = "updated_at")
   private long updatedAt;
+
+  @Column(name = "success_response_code", nullable = false)
+  private int successResponseCode;
+
+  @Column(name = "fail_response_code", nullable = false)
+  private int failResponseCode;
+
+  @Column(name = "response_in_nano_second", nullable = false)
+  private Long responseInNanoSecond;
 }

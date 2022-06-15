@@ -26,21 +26,24 @@ public class SampleData2 implements ApplicationListener<ContextRefreshedEvent> {
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
 
-//    var rest = new Rest();
-//    rest.setName("aa");
-//    rest.setPathUrl("aa");
-//    rest.setMethod(HttpMethod.GET);
-//    rest.setRequestHeaders(new HashMap<>());
+    //    var rest = new Rest();
+    //    rest.setName("aa");
+    //    rest.setPathUrl("aa");
+    //    rest.setMethod(HttpMethod.GET);
+    //    rest.setRequestHeaders(new HashMap<>());
+
+    if (restRepository.findAll().iterator().hasNext()) return;
 
     Map<String, Object> map = new HashMap<>();
+    Map<String, String[]> headers = new HashMap<>();
     map.put("hello", "");
 
     var rest =
-            Rest.builder()
-                    .name("agenpe")
-                    .pathUrl("/agenpe/api/v1/products")
-                    .method(HttpMethod.GET)
-            .requestHeaders(map)
+        Rest.builder()
+            .name("agenpe")
+            .pathUrl("/agenpe/api/v1/products")
+            .method(HttpMethod.GET)
+            .requestHeaders(new HashMap<>())
             .requestBody(new HashMap<>())
             .requestParams(new HashMap<>())
             .isRandomSuccessResponseBody(false)
@@ -48,9 +51,12 @@ public class SampleData2 implements ApplicationListener<ContextRefreshedEvent> {
             .successResponseBody(new HashMap<>())
             .failResponseHeaders(new HashMap<>())
             .failResponseBody(new HashMap<>())
-//            .createdAt(System.currentTimeMillis())
-//            .updatedAt(System.currentTimeMillis())
-                    .build();
+            .responseInNanoSecond(0L)
+            .failResponseCode(400)
+            .successResponseCode(200)
+            //            .createdAt(System.currentTimeMillis())
+            //            .updatedAt(System.currentTimeMillis())
+            .build();
     restRepository.save(rest);
   }
 }
