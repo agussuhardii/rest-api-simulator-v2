@@ -13,6 +13,14 @@ import java.util.Map;
 
 public class ConvertUtil {
 
+  public static String mapToJson(Map<String, Object> map) {
+    try {
+      return new ObjectMapper().writeValueAsString(map);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public static Object mapToObject(Map<String, Object> map) {
     final ObjectMapper mapper = new ObjectMapper();
     return mapper.convertValue(map, Object.class);

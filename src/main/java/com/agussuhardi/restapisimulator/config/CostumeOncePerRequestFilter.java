@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Configuration
+//@Configuration
 @Slf4j
 @RequiredArgsConstructor
 public class CostumeOncePerRequestFilter extends OncePerRequestFilter {

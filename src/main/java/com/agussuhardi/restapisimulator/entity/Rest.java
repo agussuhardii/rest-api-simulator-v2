@@ -2,10 +2,7 @@ package com.agussuhardi.restapisimulator.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -15,15 +12,16 @@ import org.springframework.http.HttpMethod;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
-@lombok.Data
 @Table(name = "rest")
 @Entity
+@Data
 @Getter
-@Setter
-@RequiredArgsConstructor
-@SuperBuilder(toBuilder = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TypeDefs({
   @TypeDef(name = "json", typeClass = JsonStringType.class),
   @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
@@ -48,32 +46,43 @@ public class Rest implements Serializable {
   @Enumerated(EnumType.STRING)
   private HttpMethod method;
 
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "request_body", nullable = false)
-  private Map<String, Object> requestBody;
+    @Type(type = "jsonb")
+//  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> requestHeaders = new HashMap<>();
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "request_params", nullable = false)
-  private Map<String, Object> requestParams;
+  //  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> requestBody = new HashMap<>();
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "success_response_header", nullable = false)
-  private Map<String, Object> successResponseHeader;
+  //  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> requestParams = new HashMap<>();
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "success_response_body", nullable = false)
-  private Map<String, Object> successResponseBody;
+  //  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> successResponseHeaders = new HashMap<>();
+
+  @Type(type = "jsonb")
+  //  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> successResponseBody = new HashMap<>();
 
   @Column(name = "is_random_success_response_body", nullable = false)
-  private boolean randomSuccessResponseBody;
+  private boolean isRandomSuccessResponseBody;
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "fail_response_header", nullable = false)
-  private Map<String, Object> failResponseHeader;
+  //  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> failResponseHeaders = new HashMap<>();
 
   @Type(type = "jsonb")
-  @Column(columnDefinition = "json", name = "fail_response_body", nullable = false)
-  private Map<String, Object> failResponseBody;
+  //  @Convert(converter = JsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> failResponseBody = new HashMap<>();
 
   @Column(name = "created_at")
   private long createdAt;
