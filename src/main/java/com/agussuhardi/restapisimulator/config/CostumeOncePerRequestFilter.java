@@ -1,14 +1,12 @@
 package com.agussuhardi.restapisimulator.config;
 
 import com.agussuhardi.restapisimulator.repository.RestRepository;
-import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.FilterChain;
@@ -37,8 +35,7 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       FilterChain filterChain)
       throws ServletException, IOException {
 
-    // request
-    var requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
+    var requestWrapper = new CustomHttpRequestWrapper(httpServletRequest);
     var responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 
     var requestMethod = HttpMethod.resolve(httpServletRequest.getMethod());
@@ -90,6 +87,8 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
         responseWrapper.copyBodyToResponse();
         filterChain.doFilter(requestWrapper, responseWrapper);
+
+        log.error("Invalid headers");
         return;
       }
     }
@@ -118,20 +117,18 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
         responseWrapper.copyBodyToResponse();
         filterChain.doFilter(requestWrapper, responseWrapper);
+
+        log.error("invalid params");
         return;
       }
     }
 
     // 3.   validate body
     if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
-
-      var requestBody =
-          new String(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding());
+      var requestBody = requestWrapper.getJsonBody();
       var restRequestBody = ConvertUtil.mapToJson(rest.getRequestBody());
-     log.info("request=>{}", requestBody);
-     log.info("rest=>{}", restRequestBody);
 
-      if (!requestBody.equals(restRequestBody)) {
+      if (!rest.getRequestBody().equals(ConvertUtil.jsonToMap(requestBody))) {
         responseWrapper.setStatus(rest.getFailResponseCode());
         responseWrapper.setContentType(APPLICATION_JSON_VALUE);
         responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
@@ -142,53 +139,15 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
         responseWrapper.copyBodyToResponse();
         filterChain.doFilter(requestWrapper, responseWrapper);
+
+        log.error("invalid body");
         return;
       }
     }
 
-    var requestParams = requestWrapper.getParameterMap();
-
-    Map<String, Object> requestBody = new HashMap<>();
-
-    if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
-      var requestBodyString =
-          new String(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding());
-      requestBody = ConvertUtil.jsonToMap(requestBodyString);
-    }
-
-    String bodyResponse;
-
-    //    var requestWrapper = new CustomHttpRequestWrapper(httpServletRequest);
-    //    Map<String, Object> body = new HashMap<>();
-    //    if (Arrays.asList("POST", "PUT").contains(httpServletRequest.getMethod())) {
-    //      body = requestWrapper.getBody();
-    //    }
-
-    //    get request
-
-    var responseBody = new HashMap<>();
-    responseBody.put("url", requestWrapper.getRequestURL());
-    String s = requestWrapper.getRequestURI();
-    //    System.out.println(s);
-    //    if (requestWrapper.getRequestURI().equals(url)) {
-    //      responseBody.put("message", "kamu sedang request hello");
-    //    }
-
-    //    modify response
-    //    ContentCachingResponseWrapper responseWrapper =
-    //        new ContentCachingResponseWrapper(httpServletResponse);
-
-    byte[] responseArray = responseWrapper.getContentAsByteArray();
-    bodyResponse = new String(responseArray, responseWrapper.getCharacterEncoding());
-
-    //        var map = ConvertUtil.jsonToMap(bodyResponse);
-    //    map.put("timestamp", System.currentTimeMillis());
-    bodyResponse = ConvertUtil.objectToJson(responseBody);
-    responseWrapper.resetBuffer();
-    responseWrapper.setContentLength(bodyResponse.length());
-    responseWrapper.getWriter().write(bodyResponse);
-
-    //    log.info("response=>{}", map);
+    responseWrapper.setStatus(rest.getSuccessResponseCode());
+    responseWrapper.setContentType(APPLICATION_JSON_VALUE);
+    responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getSuccessResponseBody()));
     responseWrapper.copyBodyToResponse();
 
     filterChain.doFilter(requestWrapper, responseWrapper);
