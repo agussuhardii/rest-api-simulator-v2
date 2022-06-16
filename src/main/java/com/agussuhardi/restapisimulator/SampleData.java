@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class SampleData2 implements ApplicationListener<ContextRefreshedEvent> {
+public class SampleData implements ApplicationListener<ContextRefreshedEvent> {
 
   @Autowired private RestRepository restRepository;
 
@@ -41,7 +41,7 @@ public class SampleData2 implements ApplicationListener<ContextRefreshedEvent> {
     var rest =
         Rest.builder()
             .name("agenpe")
-            .pathUrl("/agenpe/api/v1/products")
+            .uri("/agenpe/api/v1/products")
             .method(HttpMethod.GET)
             .requestHeaders(new HashMap<>())
             .requestBody(new HashMap<>())

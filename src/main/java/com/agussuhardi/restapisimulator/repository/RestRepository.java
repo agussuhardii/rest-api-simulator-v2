@@ -8,10 +8,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 //@Repository
-public interface RestRepository extends PagingAndSortingRepository<Rest, String> {
+public interface RestRepository extends PagingAndSortingRepository<Rest, UUID> {
 
-  @Query("select r from Rest r where r.method=?1 and r.pathUrl=?2")
+  @Query("select r from Rest r where r.method=?1 and r.uri=?2")
   Optional<Rest> getUrl(HttpMethod method, String pathUrl);
 }

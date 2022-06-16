@@ -1,8 +1,8 @@
 create table rest
 (
-    id                              char(36) primary key,
+    id                              uuid primary key,
     name                            varchar(50)  not null,
-    path_url                        varchar(255) not null,
+    uri                             varchar(500) not null,
     method                          varchar(20)  not null,
     request_headers                 jsonb        not null,
     request_body                    jsonb        not null,
@@ -22,5 +22,18 @@ create table rest
 
     created_at                      numeric,
     updated_at                      numeric,
-    unique (path_url, method)
+    unique (uri, method)
+);
+
+create table logs
+(
+    id         uuid
+        primary key,
+    uri        varchar(500) not null,
+    method     varchar(20)  not null,
+    headers    jsonb        not null,
+    params     jsonb        not null,
+    body       jsonb        not null,
+    created_at numeric,
+    updated_at numeric
 );

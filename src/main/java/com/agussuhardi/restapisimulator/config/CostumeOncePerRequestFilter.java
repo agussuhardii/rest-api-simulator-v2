@@ -1,8 +1,11 @@
 package com.agussuhardi.restapisimulator.config;
 
+import com.agussuhardi.restapisimulator.entity.Logs;
 import com.agussuhardi.restapisimulator.entity.Rest;
+import com.agussuhardi.restapisimulator.repository.LogsRepository;
 import com.agussuhardi.restapisimulator.repository.RestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,18 +32,42 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
   private final RestRepository restRepository;
 
+  private final LogsRepository logsRepository;
+
+  @SneakyThrows
   @Override
   protected void doFilterInternal(
       HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse,
-      FilterChain filterChain)
-      throws ServletException, IOException {
+      FilterChain filterChain) {
 
     var requestWrapper = new CustomHttpRequestWrapper(httpServletRequest);
     var responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 
     var requestMethod = HttpMethod.resolve(httpServletRequest.getMethod());
     var requestURI = requestWrapper.getRequestURI();
+
+    //    headers
+    Map<String, String> request_headers = new HashMap<>();
+    var headerNames = Collections.list(requestWrapper.getHeaderNames());
+    for (var headerName : headerNames) {
+      request_headers.put(headerName, requestWrapper.getHeader(headerName));
+    }
+
+    var logs =
+        Logs.builder()
+            .uri(requestURI)
+            .method(requestMethod)
+            .headers(request_headers)
+            .params(requestWrapper.getParameterMap())
+            .build();
+    if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
+      var requestBody = requestWrapper.getJsonBody();
+      if (requestBody != null) logs.setBody(ConvertUtil.jsonToMap(requestBody));
+    }
+
+    logsRepository.save(logs);
+
     var optionalRest = restRepository.getUrl(requestMethod, requestURI);
 
     log.info("request =>{URI=>{}, Method=>{}}", requestURI, requestMethod);
@@ -57,14 +84,9 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       return;
     }
     var rest = optionalRest.get();
+    Thread.sleep(rest.getResponseInNanoSecond());
 
     //  1.  validate headers
-    Map<String, String> request_headers = new HashMap<>();
-    var headerNames = Collections.list(requestWrapper.getHeaderNames());
-    for (var headerName : headerNames) {
-      request_headers.put(headerName, requestWrapper.getHeader(headerName));
-    }
-
     for (var restHeader : rest.getRequestHeaders().entrySet()) {
       var existHeader = false;
       for (var requestHeader : request_headers.entrySet()) {
@@ -82,7 +104,6 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
         return;
       }
     }
-    //    end validate headers
 
     // 2.   validate params
     for (var restParam : rest.getRequestParams().entrySet()) {

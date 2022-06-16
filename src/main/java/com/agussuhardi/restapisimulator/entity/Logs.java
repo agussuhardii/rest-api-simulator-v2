@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Table(name = "rest")
+@Table(name = "logs")
 @Entity
 @Data
 @Getter
@@ -27,7 +27,7 @@ import java.util.UUID;
   @TypeDef(name = "json", typeClass = JsonStringType.class),
   @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
-public class Rest implements Serializable {
+public class Logs implements Serializable {
 
   @Serial private static final long serialVersionUID = 1L;
 
@@ -36,9 +36,6 @@ public class Rest implements Serializable {
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
   private UUID id;
-
-  @Column(name = "name", nullable = false)
-  private String name;
 
   @Column(name = "uri", nullable = false)
   private String uri;
@@ -49,49 +46,21 @@ public class Rest implements Serializable {
 
   @Type(type = "jsonb")
   @Column(columnDefinition = "jsonb")
-  private Map<String, String> requestHeaders = new HashMap<>();
+  private Map<String, String> headers = new HashMap<>();
 
   @Type(type = "jsonb")
   @Column(columnDefinition = "jsonb")
-  private Map<String, Object> requestBody = new HashMap<>();
+  private Map<String, String[]> params = new HashMap<>();
 
   @Type(type = "jsonb")
   @Column(columnDefinition = "jsonb")
-  private Map<String, String[]> requestParams = new HashMap<>();
-
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> successResponseHeaders = new HashMap<>();
-
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> successResponseBody = new HashMap<>();
-
-  @Column(name = "is_random_success_response_body", nullable = false)
-  private boolean isRandomSuccessResponseBody;
-
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> failResponseHeaders = new HashMap<>();
-
-  @Type(type = "jsonb")
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> failResponseBody = new HashMap<>();
+  private Map<String, Object> body = new HashMap<>();
 
   @Column(name = "created_at")
   private long createdAt;
 
   @Column(name = "updated_at")
   private long updatedAt;
-
-  @Column(name = "success_response_code", nullable = false)
-  private int successResponseCode;
-
-  @Column(name = "fail_response_code", nullable = false)
-  private int failResponseCode;
-
-  @Column(name = "response_in_nano_second", nullable = false)
-  private Long responseInNanoSecond;
 
   @PrePersist
   public void setCreatedAt() {
