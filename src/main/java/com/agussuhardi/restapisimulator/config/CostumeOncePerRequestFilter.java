@@ -1,5 +1,6 @@
 package com.agussuhardi.restapisimulator.config;
 
+import com.agussuhardi.restapisimulator.entity.Rest;
 import com.agussuhardi.restapisimulator.repository.RestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,18 +77,7 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
       // fail response by header not valid
       if (!existHeader) {
-
-        responseWrapper.setStatus(rest.getFailResponseCode());
-        responseWrapper.setContentType(APPLICATION_JSON_VALUE);
-        responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
-
-        for (var header : rest.getRequestHeaders().entrySet()) {
-          responseWrapper.addHeader(header.getKey(), header.getValue());
-        }
-
-        responseWrapper.copyBodyToResponse();
-        filterChain.doFilter(requestWrapper, responseWrapper);
-
+        this.failResponse(requestWrapper, responseWrapper, filterChain, rest);
         log.error("Invalid headers");
         return;
       }
@@ -106,18 +96,7 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       }
 
       if (!existParam) {
-
-        responseWrapper.setStatus(rest.getFailResponseCode());
-        responseWrapper.setContentType(APPLICATION_JSON_VALUE);
-        responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
-
-        for (var header : rest.getRequestHeaders().entrySet()) {
-          responseWrapper.addHeader(header.getKey(), header.getValue());
-        }
-
-        responseWrapper.copyBodyToResponse();
-        filterChain.doFilter(requestWrapper, responseWrapper);
-
+        this.failResponse(requestWrapper, responseWrapper, filterChain, rest);
         log.error("invalid params");
         return;
       }
@@ -126,20 +105,8 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
     // 3.   validate body
     if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
       var requestBody = requestWrapper.getJsonBody();
-      var restRequestBody = ConvertUtil.mapToJson(rest.getRequestBody());
-
       if (!rest.getRequestBody().equals(ConvertUtil.jsonToMap(requestBody))) {
-        responseWrapper.setStatus(rest.getFailResponseCode());
-        responseWrapper.setContentType(APPLICATION_JSON_VALUE);
-        responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
-
-        for (var header : rest.getRequestHeaders().entrySet()) {
-          responseWrapper.addHeader(header.getKey(), header.getValue());
-        }
-
-        responseWrapper.copyBodyToResponse();
-        filterChain.doFilter(requestWrapper, responseWrapper);
-
+        this.failResponse(requestWrapper, responseWrapper, filterChain, rest);
         log.error("invalid body");
         return;
       }
@@ -150,6 +117,24 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
     responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getSuccessResponseBody()));
     responseWrapper.copyBodyToResponse();
 
+    filterChain.doFilter(requestWrapper, responseWrapper);
+  }
+
+  private void failResponse(
+      CustomHttpRequestWrapper requestWrapper,
+      ContentCachingResponseWrapper responseWrapper,
+      FilterChain filterChain,
+      Rest rest)
+      throws IOException, ServletException {
+    responseWrapper.setStatus(rest.getFailResponseCode());
+    responseWrapper.setContentType(APPLICATION_JSON_VALUE);
+    responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
+
+    for (var header : rest.getRequestHeaders().entrySet()) {
+      responseWrapper.addHeader(header.getKey(), header.getValue());
+    }
+
+    responseWrapper.copyBodyToResponse();
     filterChain.doFilter(requestWrapper, responseWrapper);
   }
 }
