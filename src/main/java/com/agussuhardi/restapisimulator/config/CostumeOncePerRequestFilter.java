@@ -41,6 +41,11 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       HttpServletResponse httpServletResponse,
       FilterChain filterChain) {
 
+    if (httpServletRequest.getRequestURI().equals("/")) {
+      filterChain.doFilter(httpServletRequest, httpServletResponse);
+      return;
+    }
+
     var requestWrapper = new CustomHttpRequestWrapper(httpServletRequest);
     var responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 
@@ -60,6 +65,7 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
             .method(requestMethod)
             .headers(request_headers)
             .params(requestWrapper.getParameterMap())
+            .body(new HashMap<>())
             .build();
     if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
       var requestBody = requestWrapper.getJsonBody();
