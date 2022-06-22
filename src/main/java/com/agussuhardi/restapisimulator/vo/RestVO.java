@@ -1,6 +1,7 @@
 package com.agussuhardi.restapisimulator.vo;
 
 import com.agussuhardi.restapisimulator.config.ConvertUtil;
+import com.google.common.base.Strings;
 import lombok.Data;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class RestVO implements Serializable {
   @Serial private static final long serialVersionUID = 1L;
 
-  private UUID id;
+  private String id;
 
   @NotNull private String name;
 
@@ -42,6 +43,11 @@ public class RestVO implements Serializable {
   @NotNull private int failResponseCode;
 
   @NotNull private Long responseInNanoSecond;
+
+  public UUID getId() {
+    if (!Strings.isNullOrEmpty(id)) return UUID.fromString(id);
+    return null;
+  }
 
   public HttpStatus getFailResponseCode() {
     return HttpStatus.valueOf(failResponseCode);

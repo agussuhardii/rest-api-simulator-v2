@@ -56,17 +56,24 @@
 
                 <div class="card-body">
                     <form class="row" id="restForm" onsubmit='return false;'>
+
+
+                        <input type="hidden" th:value="${content.id}" name="id" id="id">
+
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name"
-                                   aria-describedby="name" name="name" required>
+                                   aria-describedby="name" name="name" required
+                                   th:value="${content.name}"
+                            >
                         </div>
 
 
                         <div class="mb-3">
                             <label for="uri" class="form-label">URI</label>
                             <input type="text" class="form-control" id="uri"
-                                   aria-describedby="uri" name="uri" required>
+                                   aria-describedby="uri" name="uri" required
+                                   th:value="${content.uri}">
                         </div>
 
 
@@ -74,7 +81,9 @@
                             <label for="responseInNanoSecond" class="form-label">Response In nanosecond</label>
                             <input type="number" class="form-control" id="responseInNanoSecond"
                                    aria-describedby="responseInNanoSecond" name="responseInNanoSecond" value="0"
-                                   placeholder="Send response in nano second" required>
+                                   placeholder="Send response in nano second" required
+                                   th:value="${content.responseInNanoSecond}"
+                            >
                         </div>
 
                         <hr/>
@@ -82,7 +91,8 @@
 
                         <div class="mb-3">
                             <label for="method" class="form-label">Method</label>
-                            <select class="form-select" name="method" id="method" required>
+                            <select class="form-select" name="method" id="method" required
+                                    th:selected="${content.method}">
                                 <option th:each="method : ${methods}" th:value="${method}" th:text="${method}">One
                                 </option>
                             </select>
@@ -92,42 +102,56 @@
                         <div class="mb-3">
                             <label for="requestHeaders" class="form-label">Request Header {Json format}</label>
                             <textarea class="form-control" id="requestHeaders" rows="3" name="requestHeaders"
-                                      placeholder='{"fruit":"apple"}' required></textarea>
+                                      placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.requestHeaders}"
+                            ></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label for="requestBody" class="form-label">Request Body {Json format}</label>
                             <textarea class="form-control" id="requestBody" rows="3" name="requestBody"
-                                      placeholder='{"fruit":"apple"}' required></textarea>
+                                      placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.requestBody}"
+                            ></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label for="requestParams" class="form-label">Request Params {Json format}</label>
                             <textarea class="form-control" id="requestParams" rows="3" name="requestParams"
-                                      placeholder='{"fruit":"apple"}' required></textarea>
+                                      placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.requestParams}"
+                            ></textarea>
                         </div>
 
                         <hr/>
                         <h3>Success Response</h3>
 
                         <div class="mb-3">
-                            <label for="successResponseHeaders" class="form-label">Success Request Headers {Json format}</label>
+                            <label for="successResponseHeaders" class="form-label">Success Request Headers {Json
+                                format}</label>
                             <textarea class="form-control" id="successResponseHeaders" rows="3"
-                                      name="successResponseHeaders" placeholder='{"fruit":"apple"}' required></textarea>
+                                      name="successResponseHeaders" placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.successResponseHeaders}"
+                            ></textarea>
                         </div>
 
 
                         <div class="mb-3">
-                            <label for="successResponseBody" class="form-label">Success Request Body {Json format}</label>
+                            <label for="successResponseBody" class="form-label">Success Request Body {Json
+                                format}</label>
                             <textarea class="form-control" id="successResponseBody" rows="3" name="successResponseBody"
-                                      placeholder='{"fruit":"apple"}' required></textarea>
+                                      placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.successResponseBody}"
+                            ></textarea>
                         </div>
 
 
                         <div class="mb-3">
                             <label for="successResponseCode" class="form-label">Success Response Code</label>
-                            <select class="form-select" name="successResponseCode" id="successResponseCode" required>
-                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}">One
+                            <select class="form-select" name="successResponseCode" id="successResponseCode" required
+                                    th:selected="${content.successResponseCode}">
+                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}">
+                                    One
                                 </option>
                             </select>
                         </div>
@@ -136,23 +160,30 @@
                         <h3>Fail Response</h3>
 
                         <div class="mb-3">
-                            <label for="failResponseHeaders" class="form-label">Fail Request Headers {Json format}</label>
+                            <label for="failResponseHeaders" class="form-label">Fail Request Headers {Json
+                                format}</label>
                             <textarea class="form-control" id="failResponseHeaders" rows="3" name="failResponseHeaders"
-                                      placeholder='{"fruit":"apple"}' required></textarea>
+                                      placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.failResponseHeaders}"
+                            ></textarea>
                         </div>
 
 
                         <div class="mb-3">
                             <label for="failResponseBody" class="form-label">Fail Request Body {Json format}</label>
                             <textarea class="form-control" id="failResponseBody" rows="3" name="failResponseBody"
-                                      placeholder='{"fruit":"apple"}' required></textarea>
+                                      placeholder='{"fruit":"apple"}' required
+                                      th:text="${content.failResponseBody}"
+                            ></textarea>
                         </div>
 
 
                         <div class="mb-3">
                             <label for="failResponseCode" class="form-label">Fail Response Code</label>
-                            <select class="form-select" name="failResponseCode" id="failResponseCode" required>
-                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}">One
+                            <select class="form-select" name="failResponseCode" id="failResponseCode" required
+                                    th:selected="${content.failResponseCode}">
+                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}">
+                                    One
                                 </option>
                             </select>
                         </div>
@@ -209,9 +240,9 @@
             dataType: 'json',
             data: JSON.stringify(obj),
             success: async function (response) {
-                console.log("success")
-                console.log(response)
-                // window.location.href = "/";
+                // console.log("success")
+                // console.log(response)
+                window.location.href = "/";
             }
         });
     });

@@ -17,10 +17,6 @@
         </div>
 
 
-
-
-
-
         <div class="card-body">
             <table class="table align-middle table-row-dashed fs-6 gy-" id="rests">
             </table>
@@ -56,6 +52,10 @@
             listRest(obj);
         });
 
+        $(document).on("click", "#restForm", function (data) {
+            let id = data.currentTarget.value;
+            window.location.href = "/r/a?id=" + id;
+        });
 
         function listRest(filterObj) {
             restTable = $('table#rests')
@@ -131,8 +131,7 @@
                                 data: "id",
                                 orderable: false, targets: -1,
                                 render: function (data, type, row) {
-                                    return '<button class="btn btn-success btn-sm me-2" id="ticketView" value="' + data + '" onclick="return false;"><i class="bi bi-eye-fill"></i></button>' +
-                                        '<button class="btn btn-sm btn-primary me-2" id="ticketForm" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>'
+                                    return '<button class="btn btn-sm btn-primary me-2" id="restForm" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>'
                                 }
                             }
                         ],
