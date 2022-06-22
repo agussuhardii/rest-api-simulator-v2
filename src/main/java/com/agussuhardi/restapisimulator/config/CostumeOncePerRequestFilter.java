@@ -149,7 +149,7 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
     logs.setResponseCode(responseWrapper.getStatus());
     logsRepository.save(logs);
 
-    responseWrapper.setStatus(rest.getSuccessResponseCode());
+    responseWrapper.setStatus(rest.getSuccessResponseCode().value());
     responseWrapper.setContentType(APPLICATION_JSON_VALUE);
     responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getSuccessResponseBody()));
     responseWrapper.copyBodyToResponse();
@@ -164,7 +164,7 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       Rest rest,
       Logs logs)
       throws IOException, ServletException {
-    responseWrapper.setStatus(rest.getFailResponseCode());
+    responseWrapper.setStatus(rest.getFailResponseCode().value());
     responseWrapper.setContentType(APPLICATION_JSON_VALUE);
     responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getFailResponseBody()));
 

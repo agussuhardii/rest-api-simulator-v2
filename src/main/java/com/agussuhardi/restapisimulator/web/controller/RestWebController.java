@@ -1,10 +1,9 @@
 package com.agussuhardi.restapisimulator.web.controller;
 
 import com.agussuhardi.restapisimulator.config.ApiResponse;
-import com.agussuhardi.restapisimulator.service.impl.LogsService;
 import com.agussuhardi.restapisimulator.service.impl.RestService;
-import com.agussuhardi.restapisimulator.vo.LogsQueryVO;
 import com.agussuhardi.restapisimulator.vo.RestQueryVO;
+import com.agussuhardi.restapisimulator.vo.RestVO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,5 +26,11 @@ public class RestWebController {
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> list(RestQueryVO vo, Pageable pageable) {
     return new ApiResponse<>(HttpStatus.OK, restService.query(vo, pageable)).entity();
+  }
+
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> save(
+      @Validated @RequestBody RestVO request, BindingResult bindingResult) {
+    return new ApiResponse<>(HttpStatus.OK, restService.save(request)).entity();
   }
 }

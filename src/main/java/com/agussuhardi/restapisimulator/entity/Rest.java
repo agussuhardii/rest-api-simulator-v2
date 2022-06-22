@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -84,11 +85,13 @@ public class Rest implements Serializable {
   @Column(name = "updated_at")
   private long updatedAt;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "success_response_code", nullable = false)
-  private int successResponseCode;
+  private HttpStatus successResponseCode;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "fail_response_code", nullable = false)
-  private int failResponseCode;
+  private HttpStatus failResponseCode;
 
   @Column(name = "response_in_nano_second", nullable = false)
   private Long responseInNanoSecond;

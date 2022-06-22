@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -34,15 +35,12 @@ public class SampleData implements ApplicationListener<ContextRefreshedEvent> {
 
     if (restRepository.findAll().iterator().hasNext()) return;
 
-    Map<String, Object> map = new HashMap<>();
-    Map<String, String[]> headers = new HashMap<>();
-    map.put("hello", "");
 
     for (int i = 0; i < 100; i++) {
       var rest =
           Rest.builder()
-              .name("agenpe"+i)
-              .uri("/agenpe/api/v1/products/"+i)
+              .name("agenpe" + i)
+              .uri("/agenpe/api/v1/products/" + i)
               .method(HttpMethod.GET)
               .requestHeaders(new HashMap<>())
               .requestBody(new HashMap<>())
@@ -53,8 +51,8 @@ public class SampleData implements ApplicationListener<ContextRefreshedEvent> {
               .failResponseHeaders(new HashMap<>())
               .failResponseBody(new HashMap<>())
               .responseInNanoSecond(0L)
-              .failResponseCode(400)
-              .successResponseCode(200)
+              .failResponseCode(HttpStatus.BAD_REQUEST)
+              .successResponseCode(HttpStatus.OK)
               //            .createdAt(System.currentTimeMillis())
               //            .updatedAt(System.currentTimeMillis())
               .build();

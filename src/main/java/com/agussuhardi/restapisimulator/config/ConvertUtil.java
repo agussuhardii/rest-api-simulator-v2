@@ -39,6 +39,23 @@ public class ConvertUtil {
       return new HashMap<>();
     }
   }
+  public static Map<String, String> jsonToMapString(String json) {
+    final ObjectMapper mapper = new ObjectMapper();
+    try {
+      return mapper.readValue(json, new TypeReference<>() {});
+    } catch (JsonProcessingException e) {
+      return new HashMap<>();
+    }
+  }
+
+  public static Map<String, String[]> jsonToMapArray(String json) {
+    final ObjectMapper mapper = new ObjectMapper();
+    try {
+      return mapper.readValue(json, new TypeReference<Map<String, String[]>>() {});
+    } catch (JsonProcessingException e) {
+      return new HashMap<>();
+    }
+  }
 
   public static Object jsonToObject(String json) throws JsonProcessingException {
     final ObjectMapper mapper = new ObjectMapper();
