@@ -27,13 +27,14 @@ create table rest
 
 create table logs
 (
-    id         uuid
+    id            uuid
         primary key,
-    uri        varchar(500) not null,
-    method     varchar(20)  not null,
-    headers    jsonb        not null,
-    params     jsonb        not null,
-    body       jsonb        not null,
-    created_at numeric,
-    updated_at numeric
+    uri           varchar(500) not null,
+    method        varchar(20)  not null,
+    headers       jsonb        not null,
+    params        jsonb        not null,
+    body          jsonb        not null,
+    response_code smallint     not null,
+    created_at    numeric,
+    updated_at    numeric
 );

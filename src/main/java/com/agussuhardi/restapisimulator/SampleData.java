@@ -38,25 +38,27 @@ public class SampleData implements ApplicationListener<ContextRefreshedEvent> {
     Map<String, String[]> headers = new HashMap<>();
     map.put("hello", "");
 
-    var rest =
-        Rest.builder()
-            .name("agenpe")
-            .uri("/agenpe/api/v1/products")
-            .method(HttpMethod.GET)
-            .requestHeaders(new HashMap<>())
-            .requestBody(new HashMap<>())
-            .requestParams(new HashMap<>())
-            .isRandomSuccessResponseBody(false)
-            .successResponseHeaders(new HashMap<>())
-            .successResponseBody(new HashMap<>())
-            .failResponseHeaders(new HashMap<>())
-            .failResponseBody(new HashMap<>())
-            .responseInNanoSecond(0L)
-            .failResponseCode(400)
-            .successResponseCode(200)
-            //            .createdAt(System.currentTimeMillis())
-            //            .updatedAt(System.currentTimeMillis())
-            .build();
-    restRepository.save(rest);
+    for (int i = 0; i < 100; i++) {
+      var rest =
+          Rest.builder()
+              .name("agenpe"+i)
+              .uri("/agenpe/api/v1/products/"+i)
+              .method(HttpMethod.GET)
+              .requestHeaders(new HashMap<>())
+              .requestBody(new HashMap<>())
+              .requestParams(new HashMap<>())
+              .isRandomSuccessResponseBody(false)
+              .successResponseHeaders(new HashMap<>())
+              .successResponseBody(new HashMap<>())
+              .failResponseHeaders(new HashMap<>())
+              .failResponseBody(new HashMap<>())
+              .responseInNanoSecond(0L)
+              .failResponseCode(400)
+              .successResponseCode(200)
+              //            .createdAt(System.currentTimeMillis())
+              //            .updatedAt(System.currentTimeMillis())
+              .build();
+      restRepository.save(rest);
+    }
   }
 }

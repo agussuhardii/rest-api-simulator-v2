@@ -62,6 +62,8 @@ public class Logs implements Serializable {
   @Column(name = "updated_at")
   private long updatedAt;
 
+  private int responseCode;
+
   @PrePersist
   public void setCreatedAt() {
     this.createdAt = System.currentTimeMillis();

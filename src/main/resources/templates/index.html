@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.84.0">
-    <title>Sticky Footer Navbar Template · Bootstrap v5.0</title>
+    <title>Rest api simulator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"/>
-
 
     <style>
         .bd-placeholder-img {
@@ -28,8 +26,6 @@
             }
         }
     </style>
-
-
 </head>
 <body class="d-flex flex-column h-100">
 
@@ -43,14 +39,16 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <ul class="nav navbar-nav me-auto mb-2 mb-md-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Logs</a>
+                        <a class="nav-link active link-light" href="#Rest" data-bs-toggle="tab">Rest</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Rest</a>
+                        <a class="nav-link link-light" href="#Logs" data-bs-toggle="tab">Logs</a>
                     </li>
                 </ul>
+
+
                 <form class="d-flex" id="filter" onsubmit='return false;'>
                     <select class="form-control me-2" name="method">
                         <option value="ALL">All Method</option>
@@ -66,8 +64,17 @@
 
 <!-- Begin page content -->
 <main class="flex-shrink-0">
-    <table class="table align-middle table-row-dashed fs-6 gy-" id="logTable">
-    </table>
+    <div class="" style="padding: 60px 15px 0;">
+        <div class="tab-content">
+            <div id="Rest" class="tab-pane active">
+                <div th:replace="fragment/rest::table"></div>
+            </div>
+            <div id="Logs" class="tab-pane fade">
+                <h2>Logs</h2>
+            </div>
+        </div>
+
+    </div>
 </main>
 
 <footer class="footer mt-auto py-3 bg-light">
@@ -83,101 +90,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-
-
-<script th:inline="javascript">
-    let logTable;
-
-    const serialize_form = form => JSON.stringify(
-        Array.from(new FormData(form).entries())
-            .reduce((m, [key, value]) => Object.assign(m, {[key]: value}), {})
-    );
-
-
-    $(document).on('submit', '#filter', function (e) {
-
-        let obj = JSON.parse(serialize_form(this));
-
-        console.log(obj)
-
-        $(document).ready(function () {
-            logTable = $('table#logTable')
-                .DataTable({
-                        serverSide: true,
-                        ordering: false,
-                        bDestroy: true,
-                        ajax: function (data, callback, settings) {
-
-                            // make a regular ajax request using data.start and data.length
-                            $.post('/', {
-                                size: data.length,
-                                page: (data.start / data.length),
-                                sort: 'createdAt',
-                            }, function (res) {
-                                // map your server's response to the DataTables format and pass it to
-                                // DataTables' callback
-                                callback({
-                                    recordsTotal: res.data.totalElements,
-                                    recordsFiltered: res.data.totalElements,
-                                    data: res.data.content
-                                });
-                            });
-                        },
-
-                        columns: [
-                            {
-                                title: '#',
-                                data: "id",
-                                orderable: false, targets: -1,
-                                render: function (data, type, row, meta) {
-                                    return meta.row + meta.settings._iDisplayStart + 1;
-                                }
-                            },
-                            {
-                                title: "Date",
-                                data: "createdAt",
-                                render: function (data, type, row) {
-                                    const createdAt = new Date(row.createdAt);
-                                    return createdAt.toLocaleDateString() + ' | ' + createdAt.toLocaleTimeString()
-                                }
-                            },
-                            {
-                                title: "URI",
-                                data: "method",
-                                render: function (data, type, row) {
-                                    return row.method + '=> ' + row.uri
-                                }
-                            },
-                            {
-                                title: "Params",
-                                data: "params",
-                                render: function (data, type, row) {
-                                    return '<pre >' + JSON.stringify(row.params, undefined, 4) + '</pre>';
-                                }
-                            },
-                            {
-                                title: "Headers",
-                                data: "headers",
-                                render: function (data, type, row) {
-                                    return '<pre >' + JSON.stringify(row.headers, undefined, 4) + '</pre>';
-                                }
-                            },
-                            {
-                                title: "Body",
-                                data: "body",
-                                render: function (data, type, row) {
-                                    JSON.stringify(row.body, undefined, 4)
-                                    return '<pre >' + JSON.stringify(row.body, undefined, 4) + '</pre>';
-                                }
-                            }
-                        ],
-                    },
-                );
-        });
-
-    });
-
-
-</script>
+<div th:replace="/fragment/rest::js"></div>
 </body>
 </html>
