@@ -6,7 +6,9 @@
 
     <div class="card">
         <div class="card-header">
+            <h1>
             Rest
+            </h1>
         </div>
         <div class="card-body">
             <table class="table align-middle table-row-dashed fs-6 gy-" id="rests">
@@ -27,6 +29,7 @@
         // on load
         $(document).ready(function () {
             onInit();
+            console.log("init")
         });
 
 
@@ -36,40 +39,11 @@
             listRest()
         }
 
-        //
-        // $(document).on('submit', '#ticketFormFilter', function (e) {
-        //     $("#close_filter").show();
-        //     let obj = JSON.parse(serialize_form(this));
-        //     listTickets(obj);
-        // });
-        //
-        //
-        // $(document).on("click", "#ticketView", function (data) {
-        //     window.location.href = baseUrl + '/' + data.currentTarget.value;
-        // });
-        //
-        // $(document).on("click", "#ticketForm", function (data) {
-        //     let id = data.currentTarget.value;
-        //     window.location.href = baseUrl + "/form?id=" + id;
-        // });
-        //
-        // $(document).on("click", "#formUser", function (data) {
-        //     $('#formUserModal', function (event) {
-        //         $(this).find("#formUserTitle").text('Add User');
-        //         $(this).find("#formUserFullName").val('');
-        //         $(this).find("#formUserEmail").val('')
-        //     }).modal('show')
-        // });
-        //
-        // $(document).on("click", "#deleteUser", function (data) {
-        //     let id = data.currentTarget.value;
-        //     let users = userTable.rows().data().toArray();
-        //     let user = users.find(x => x.id === id);
-        //
-        //     $('#deleteUserModal', function (event) {
-        //         $(this).find("#deleteUserTitle").text('Are you want to delete this user : ' + user.fullName);
-        //     }).modal('show')
-        // });
+
+        $(document).on('submit', '#filter', function (e) {
+            let obj = JSON.parse(serialize_form(this));
+            listRest(obj);
+        });
 
 
         function listRest(filterObj) {
@@ -89,6 +63,7 @@
                             }
 
                             params = {...params, ...filterObj};
+
 
                             // make a regular ajax request using data.start and data.length
                             $.get(restApiUrl, params, function (res) {

@@ -51,9 +51,11 @@
 
                 <form class="d-flex" id="filter" onsubmit='return false;'>
                     <select class="form-control me-2" name="method">
-                        <option value="ALL">All Method</option>
-                        <option th:each="method : ${methods}" th:text="${method}" th:value="method">Method</option>
+                        <option value="">All Method</option>
+                        <option th:each="method : ${methods}" th:text="${method}" th:value="${method}">Method</option>
                     </select>
+
+
                     <input class="form-control me-2" type="text" placeholder="URI" aria-label="Search" name="uri">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
@@ -91,5 +93,13 @@
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <div th:replace="/fragment/rest::js"></div>
+
+<script th:inline="javascript">
+    const serialize_form = form => JSON.stringify(
+        Array.from(new FormData(form).entries())
+            .reduce((m, [key, value]) => Object.assign(m, {[key]: value}), {})
+    );
+</script>
+
 </body>
 </html>
