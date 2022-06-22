@@ -43,7 +43,9 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
     if (httpServletRequest.getRequestURI().equals("/")
         || httpServletRequest.getRequestURI().equals("/l")
-        || httpServletRequest.getRequestURI().equals("/r")) {
+        || httpServletRequest.getRequestURI().equals("/r") //list rest api
+        || httpServletRequest.getRequestURI().equals("/r/a") //add form rest
+    ) {
       filterChain.doFilter(httpServletRequest, httpServletResponse);
       return;
     }
