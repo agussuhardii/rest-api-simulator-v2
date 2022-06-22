@@ -11,4 +11,13 @@ public class LogsQueryVO implements Serializable {
 
   private String method;
   private String uri;
+
+  public String getMethod() {
+    if (method != null && method.equals("")) return null;
+    return method;
+  }
+
+  public String getUri() {
+    return uri;
+  }
 }

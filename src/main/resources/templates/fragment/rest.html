@@ -58,9 +58,9 @@
             listRest(obj);
         });
 
-        $(document).on("click", "#restForm", function (data) {
+        $(document).on("click", "#logsView", function (data) {
             let id = data.currentTarget.value;
-            window.location.href = "/r/a?id=" + id;
+            window.location.href = "/l/a?id=" + id;
         });
 
         function listRest(filterObj) {
@@ -71,6 +71,7 @@
                         ordering: false,
                         bDestroy: true,
                         searching: false,
+                        responsive: true,
                         ajax: function (data, callback, settings) {
 
                             let params = {
@@ -137,7 +138,7 @@
                                 data: "id",
                                 orderable: false, targets: -1,
                                 render: function (data, type, row) {
-                                    return '<button class="btn btn-sm btn-primary me-2" id="restForm" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>'
+                                    return '<button class="btn btn-sm btn-primary me-2" id="logsView" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>'
                                 }
                             }
                         ],

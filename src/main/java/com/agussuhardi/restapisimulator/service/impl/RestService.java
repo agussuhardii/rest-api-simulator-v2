@@ -23,8 +23,6 @@ public class RestService {
   private final RestRepository restRepository;
 
   public Page<Rest> query(RestQueryVO vo, Pageable pageable) {
-    log.info(vo.getMethod());
-    log.info(vo.getUri());
     return restRepository.findAllBy(vo.getMethod(), vo.getUri(), pageable);
   }
 
