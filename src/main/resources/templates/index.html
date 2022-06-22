@@ -74,7 +74,7 @@
                 <div th:replace="fragment/rest::table"></div>
             </div>
             <div id="Logs" class="tab-pane fade">
-                <h2>Logs</h2>
+                <div th:replace="fragment/logs::table"></div>
             </div>
         </div>
 
@@ -95,12 +95,19 @@
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <div th:replace="/fragment/rest::js"></div>
+<div th:replace="/fragment/logs::js"></div>
 
 <script th:inline="javascript">
     const serialize_form = form => JSON.stringify(
         Array.from(new FormData(form).entries())
             .reduce((m, [key, value]) => Object.assign(m, {[key]: value}), {})
     );
+
+    // on load
+    $(document).ready(function () {
+        listRest()
+    });
+
 </script>
 
 </body>

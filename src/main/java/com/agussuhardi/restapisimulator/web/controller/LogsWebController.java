@@ -14,21 +14,16 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping
+@RequestMapping("/l")
 @AllArgsConstructor
 public class LogsWebController {
 
   private final LogsService logsService;
 
-//  @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity<?> list(LogsQueryVO request, Pageable pageable) {
-//    return new ApiResponse<>(HttpStatus.OK, logsService.query(request, pageable)).entity();
-//  }
-
-
-  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> add(
-          @Validated @RequestBody LogsQueryVO request,  Pageable pageable, BindingResult bindingResult) {
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> list(LogsQueryVO request, Pageable pageable) {
     return new ApiResponse<>(HttpStatus.OK, logsService.query(request, pageable)).entity();
   }
+
+
 }
