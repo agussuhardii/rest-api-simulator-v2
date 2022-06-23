@@ -96,12 +96,9 @@
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <div th:replace="/rest/rest::js"></div>
 <div th:replace="/logs/logs::js"></div>
-
+<div th:replace="/fragment/interceptor::js"></div>
 <script th:inline="javascript">
-    const serialize_form = form => JSON.stringify(
-        Array.from(new FormData(form).entries())
-            .reduce((m, [key, value]) => Object.assign(m, {[key]: value}), {})
-    );
+
 
     // on load
     $(document).ready(function () {

@@ -206,17 +206,12 @@
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-
+<div th:replace="/fragment/interceptor::js"></div>
 <script th:inline="javascript">
-    const serialize_form = form => JSON.stringify(
-        Array.from(new FormData(form).entries())
-            .reduce((m, [key, value]) => Object.assign(m, {[key]: value}), {})
-    );
 
     // on load
     $(document).ready(function () {
         $('#errorMessage').hide();
-
     });
 
     $(document).on('submit', '#restForm', function (e) {
@@ -236,9 +231,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const duplicate = urlParams.get('duplicate');
         console.log(duplicate)
-        if (duplicate !== undefined && (duplicate === 'true' || duplicate===true)) {
-            obj.id = ''
-        }
+        // if (duplicate !== undefined && (duplicate === 'true' || duplicate === true)) {
+        //     obj.id = ''
+        // }
 
         $.ajax({
             headers: {
@@ -249,7 +244,7 @@
             dataType: 'json',
             data: JSON.stringify(obj),
             success: async function (response) {
-                window.location.href = "/";
+                // window.location.href = "/";
             }
         });
     });
