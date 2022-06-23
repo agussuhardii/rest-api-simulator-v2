@@ -127,7 +127,7 @@
                         <h3>Success Response</h3>
 
                         <div class="mb-3">
-                            <label for="successResponseHeaders" class="form-label">Success Request Headers {Json
+                            <label for="successResponseHeaders" class="form-label">Success Response Headers {Json
                                 format}</label>
                             <textarea class="form-control" id="successResponseHeaders" rows="3"
                                       name="successResponseHeaders" placeholder='{"fruit":"apple"}' required
@@ -137,9 +137,9 @@
 
 
                         <div class="mb-3">
-                            <label for="successResponseBody" class="form-label">Success Request Body {Json
+                            <label for="successResponseBody" class="form-label">Success Response Body {Json
                                 format}</label>
-                            <textarea class="form-control" id="successResponseBody" rows="3" name="successResponseBody"
+                            <textarea class="form-control" id="successResponseBody" rows="5" name="successResponseBody"
                                       placeholder='{"fruit":"apple"}' required
                                       th:text="${content.successResponseBody}"
                             ></textarea>
@@ -160,7 +160,7 @@
                         <h3>Fail Response</h3>
 
                         <div class="mb-3">
-                            <label for="failResponseHeaders" class="form-label">Fail Request Headers {Json
+                            <label for="failResponseHeaders" class="form-label">Fail Response Headers {Json
                                 format}</label>
                             <textarea class="form-control" id="failResponseHeaders" rows="3" name="failResponseHeaders"
                                       placeholder='{"fruit":"apple"}' required
@@ -170,7 +170,7 @@
 
 
                         <div class="mb-3">
-                            <label for="failResponseBody" class="form-label">Fail Request Body {Json format}</label>
+                            <label for="failResponseBody" class="form-label">Fail Response Body {Json format}</label>
                             <textarea class="form-control" id="failResponseBody" rows="3" name="failResponseBody"
                                       placeholder='{"fruit":"apple"}' required
                                       th:text="${content.failResponseBody}"
@@ -209,9 +209,24 @@
 <div th:replace="/fragment/interceptor::js"></div>
 <script th:inline="javascript">
 
+    /*<![CDATA[*/
+    const content = /*[[${content}]]*/ '{}';
+    /*]]>*/
+
     // on load
     $(document).ready(function () {
         $('#errorMessage').hide();
+
+        document.getElementById("successResponseBody").value = JSON.stringify(content.successResponseBody, undefined, 2);
+        document.getElementById("requestHeaders").value = JSON.stringify(content.requestHeaders, undefined, 2);
+        document.getElementById("requestBody").value = JSON.stringify(content.requestBody, undefined, 2);
+        document.getElementById("requestParams").value = JSON.stringify(content.requestParams, undefined, 2);
+        document.getElementById("successResponseHeaders").value = JSON.stringify(content.successResponseHeaders, undefined, 2);
+        document.getElementById("successResponseBody").value = JSON.stringify(content.successResponseBody, undefined, 2);
+        document.getElementById("failResponseHeaders").value = JSON.stringify(content.failResponseHeaders, undefined, 2);
+        document.getElementById("failResponseBody").value = JSON.stringify(content.failResponseBody, undefined, 2);
+
+
     });
 
     $(document).on('submit', '#restForm', function (e) {
@@ -230,10 +245,9 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const duplicate = urlParams.get('duplicate');
-        console.log(duplicate)
-        // if (duplicate !== undefined && (duplicate === 'true' || duplicate === true)) {
-        //     obj.id = ''
-        // }
+        if (duplicate !== undefined && (duplicate === 'true' || duplicate === true)) {
+            obj.id = ''
+        }
 
         $.ajax({
             headers: {
@@ -244,7 +258,7 @@
             dataType: 'json',
             data: JSON.stringify(obj),
             success: async function (response) {
-                // window.location.href = "/";
+                window.location.href = "/";
             }
         });
     });

@@ -108,12 +108,8 @@
                                 }
                             },
                             {
-                                title: 'Created At',
-                                data: "uri",
-                                render: function (data, type, row, meta) {
-                                    const date = new Date(row.createdAt);
-                                    return date.toLocaleDateString() + ', ' + date.toLocaleTimeString()
-                                }
+                                title: 'Name',
+                                data: "name"
                             },
                             {
                                 title: 'URI',
