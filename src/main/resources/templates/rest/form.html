@@ -216,6 +216,7 @@
     // on load
     $(document).ready(function () {
         $('#errorMessage').hide();
+
     });
 
     $(document).on('submit', '#restForm', function (e) {
@@ -230,6 +231,14 @@
         if (jsonValid(obj.successResponseBody) === false) return;
         if (jsonValid(obj.failResponseHeaders) === false) return;
         if (jsonValid(obj.failResponseBody) === false) return;
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const duplicate = urlParams.get('duplicate');
+        console.log(duplicate)
+        if (duplicate !== undefined && (duplicate === 'true' || duplicate===true)) {
+            obj.id = ''
+        }
 
         $.ajax({
             headers: {

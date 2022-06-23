@@ -61,6 +61,11 @@
             window.location.href = "/r/a?id=" + id;
         });
 
+        $(document).on("click", "#restFormDuplicate", function (data) {
+            let id = data.currentTarget.value;
+            window.location.href = "/r/a?duplicate=true&id=" + id;
+        });
+
         function listRest(filterObj) {
             restTable = $('table#rests')
                 .DataTable({
@@ -136,7 +141,8 @@
                                 data: "id",
                                 orderable: false, targets: -1,
                                 render: function (data, type, row) {
-                                    return '<button class="btn btn-sm btn-primary me-2" id="restForm" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>'
+                                    return '<button class="btn btn-sm btn-primary me-2" id="restForm" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>' +
+                                        '<button class="btn btn-sm btn-primary me-2" id="restFormDuplicate" value="' + data + '" onclick="return false;"><i class="bi bi-clipboard"></i></i></button>'
                                 }
                             }
                         ],
