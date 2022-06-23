@@ -18,6 +18,6 @@ public interface RestRepository extends PagingAndSortingRepository<Rest, UUID> {
   @Query("select r from Rest r where r.method=?1 and r.uri=?2")
   Optional<Rest> getUrl(HttpMethod method, String pathUrl);
 
-  @Query("select r from Rest r where (?1 is null or r.method=?1) and r.uri=?2")
+  @Query("select r from Rest r where (?1 is null or r.method=?1) and (?2 is null or r.uri=?2)")
   Page<Rest> findAllBy(String method, String pathUrl, Pageable pageable);
 }

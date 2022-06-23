@@ -16,6 +16,6 @@ public interface LogsRepository extends PagingAndSortingRepository<Logs, UUID> {
 
 
 
-    @Query("select l from Logs l where (?1 is null or l.method=?1) and l.uri=?2")
+    @Query("select l from Logs l where (?1 is null or l.method=?1) and (?2 is null or l.uri=?2)")
     Page<Logs> findAllBy(String method, String pathUrl, Pageable pageable);
 }
