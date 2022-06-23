@@ -230,7 +230,7 @@
         if (jsonValid(obj.successResponseBody) === false) return;
         if (jsonValid(obj.failResponseHeaders) === false) return;
         if (jsonValid(obj.failResponseBody) === false) return;
-        console.log(obj)
+
         $.ajax({
             headers: {
                 'Content-Type': 'application/json'
@@ -240,8 +240,6 @@
             dataType: 'json',
             data: JSON.stringify(obj),
             success: async function (response) {
-                // console.log("success")
-                // console.log(response)
                 window.location.href = "/";
             }
         });

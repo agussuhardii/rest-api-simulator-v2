@@ -7,18 +7,13 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex bd-highlight">
-                <h3 class="p-2 flex-grow-1 bd-highlight">Rest API</h3>
-                <div class="p-2 bd-highlight">
-                    <a href="/r/a" class="btn btn-sm btn-primary me-2">
-                        Add
-                    </a>
-                </div>
+                <h3 class="p-2 flex-grow-1 bd-highlight">Logs</h3>
             </div>
         </div>
 
 
         <div class="card-body">
-            <table class="table align-middle table-row-dashed fs-6 gy-" id="rests">
+            <table class="table align-middle table-row-dashed fs-6 gy-" id="logs">
             </table>
         </div>
     </div>
@@ -29,49 +24,45 @@
 
 <th:block th:fragment="js">
     <script th:inline="javascript">
-        const restApiUrl = "/r";
-        let restTable;
+        const logsApiUrl = "/l";
+        let logsTable;
 
-
-        $('a[href="#Rest"]').one('click', function () {
-            console.log("tab rest")
-            listRest()
+        $('a[href="#Logs"]').one('click', function () {
+                listLogs()
         });
 
 
         // on load
         $(document).ready(function () {
             onInit();
-            console.log("init")
         });
 
 
         function onInit() {
-            $("#close_filter").hide();
-            $('#ticketFormFilter').trigger("reset");
-            listRest()
+            listLogs()
         }
 
 
         $(document).on('submit', '#filter', function (e) {
             let obj = JSON.parse(serialize_form(this));
-            listRest(obj);
+            listLogs(obj);
         });
 
         $(document).on("click", "#logsView", function (data) {
             let id = data.currentTarget.value;
-            window.location.href = "/l/a?id=" + id;
+            window.location.href = "/l/v?id=" + id;
         });
 
-        function listRest(filterObj) {
-            restTable = $('table#rests')
+
+        function listLogs(filterObj) {
+            logsTable = $('table#logs')
                 .DataTable({
                         processing: true,
                         serverSide: true,
                         ordering: false,
                         bDestroy: true,
                         searching: false,
-                        responsive: true,
+                    responsive: true,
                         ajax: function (data, callback, settings) {
 
                             let params = {
@@ -82,9 +73,8 @@
 
                             params = {...params, ...filterObj};
 
-
                             // make a regular ajax request using data.start and data.length
-                            $.get(restApiUrl, params, function (res) {
+                            $.get(logsApiUrl, params, function (res) {
                                 // map your server's response to the DataTables format and pass it to
                                 // DataTables' callback
                                 callback({
@@ -113,6 +103,10 @@
                                 }
                             },
                             {
+                                title: 'Response Code',
+                                data: "responseCode"
+                            },
+                            {
                                 title: 'URI',
                                 data: "uri",
                                 render: function (data, type, row, meta) {
@@ -120,17 +114,24 @@
                                 }
                             },
                             {
-                                title: 'Request Params',
-                                data: "requestParams",
+                                title: 'Headers',
+                                data: "headers",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.requestParams);
+                                    return JSON.stringify(row.headers);
                                 }
                             },
                             {
-                                title: 'Request Body',
-                                data: "requestBody",
+                                title: 'Params',
+                                data: "params",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.requestBody);
+                                    return JSON.stringify(row.params);
+                                }
+                            },
+                            {
+                                title: 'Body',
+                                data: "body",
+                                render: function (data, type, row, meta) {
+                                    return JSON.stringify(row.body);
                                 }
                             },
                             {
@@ -138,7 +139,7 @@
                                 data: "id",
                                 orderable: false, targets: -1,
                                 render: function (data, type, row) {
-                                    return '<button class="btn btn-sm btn-primary me-2" id="logsView" value="' + data + '" onclick="return false;"><i class="bi bi-pencil-fill"></i></button>'
+                                    return '<button class="btn btn-sm btn-primary me-2" id="logsView" value="' + data + '" onclick="return false;"><i class="bi bi-eye-fill"></i></i></button>'
                                 }
                             }
                         ],
