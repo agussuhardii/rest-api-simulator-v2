@@ -93,7 +93,9 @@
                             <label for="method" class="form-label">Method</label>
                             <select class="form-select" name="method" id="method" required
                                     th:selected="${content.method}">
-                                <option th:each="method : ${methods}" th:value="${method}" th:text="${method}">One
+                                <option th:each="method : ${methods}" th:value="${method}" th:text="${method}"
+                                        th:selected="${method?.toString()==content?.method.toString()}"
+                                >One
                                 </option>
                             </select>
                         </div>
@@ -149,8 +151,10 @@
                         <div class="mb-3">
                             <label for="successResponseCode" class="form-label">Success Response Code</label>
                             <select class="form-select" name="successResponseCode" id="successResponseCode" required
-                                    th:selected="${content.successResponseCode}">
-                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}">
+                                    th:value="${content.successResponseCode}">
+                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}"
+                                        th:selected="${status?.toString()==content?.successResponseCode.toString()}"
+                                >
                                     One
                                 </option>
                             </select>
@@ -182,7 +186,9 @@
                             <label for="failResponseCode" class="form-label">Fail Response Code</label>
                             <select class="form-select" name="failResponseCode" id="failResponseCode" required
                                     th:selected="${content.failResponseCode}">
-                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}">
+                                <option th:each="status : ${statuses}" th:value="${status.value()}" th:text="${status}"
+                                        th:selected="${status?.toString()==content?.failResponseCode.toString()}"
+                                >
                                     One
                                 </option>
                             </select>

@@ -5,6 +5,7 @@ import com.agussuhardi.restapisimulator.entity.Rest;
 import com.agussuhardi.restapisimulator.repository.RestRepository;
 import com.agussuhardi.restapisimulator.vo.RestQueryVO;
 import com.agussuhardi.restapisimulator.vo.RestVO;
+import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +28,10 @@ public class RestService {
   }
 
   public Rest save(RestVO vo) {
+    if (vo.getId() == null) {
+      var optional = restRepository.getUrl(vo.getMethod(), vo.getUri());
+      if (optional.isPresent()) throw new CustomException("Duplicate url", HttpStatus.BAD_REQUEST);
+    }
     Rest rest = new Rest();
     BeanUtils.copyProperties(vo, rest);
     return restRepository.save(rest);

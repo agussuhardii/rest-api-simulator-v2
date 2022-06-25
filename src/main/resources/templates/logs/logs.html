@@ -28,7 +28,7 @@
         let logsTable;
 
         $('a[href="#Logs"]').one('click', function () {
-                listLogs()
+            listLogs()
         });
 
 
@@ -62,7 +62,7 @@
                         ordering: false,
                         bDestroy: true,
                         searching: false,
-                    responsive: true,
+                        responsive: true,
                         ajax: function (data, callback, settings) {
 
                             let params = {
@@ -117,21 +117,21 @@
                                 title: 'Headers',
                                 data: "headers",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.headers);
+                                    return '<pre>' + JSON.stringify(row.headers, undefined, 4) + '</pre>'
                                 }
                             },
                             {
                                 title: 'Params',
                                 data: "params",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.params);
+                                    return '<pre>' + JSON.stringify(row.body, undefined, 4) + '</pre>'
                                 }
                             },
                             {
                                 title: 'Body',
                                 data: "body",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.body);
+                                    return '<pre>' + JSON.stringify(row.body, undefined, 4) + '</pre>'
                                 }
                             },
                             {

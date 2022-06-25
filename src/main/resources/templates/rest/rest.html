@@ -122,14 +122,14 @@
                                 title: 'Request Params',
                                 data: "requestParams",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.requestParams);
+                                    return '<pre>'+JSON.stringify(row.requestBody, undefined, 4)+'</pre>'
                                 }
                             },
                             {
                                 title: 'Request Body',
                                 data: "requestBody",
                                 render: function (data, type, row, meta) {
-                                    return JSON.stringify(row.requestBody);
+                                    return '<pre>'+JSON.stringify(row.requestBody, undefined, 4)+'</pre>'
                                 }
                             },
                             {
