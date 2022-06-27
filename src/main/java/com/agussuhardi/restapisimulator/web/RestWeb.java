@@ -26,7 +26,12 @@ public class RestWeb {
     log.info(id);
     model.addAttribute("methods", HttpMethod.values());
     model.addAttribute("statuses", HttpStatus.values());
+
     Rest content = new Rest();
+    content.setMethod(HttpMethod.GET);
+    content.setSuccessResponseCode(HttpStatus.OK);
+    content.setFailResponseCode(HttpStatus.BAD_REQUEST);
+
     if (!Strings.isNullOrEmpty(id)) content = restService.getById(id);
     model.addAttribute("content", content);
     return "rest/form";
