@@ -4,6 +4,7 @@ import com.agussuhardi.restapisimulator.entity.Logs;
 import com.agussuhardi.restapisimulator.entity.Rest;
 import com.agussuhardi.restapisimulator.repository.LogsRepository;
 import com.agussuhardi.restapisimulator.repository.RestRepository;
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -155,10 +153,27 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
 
     responseWrapper.setStatus(rest.getSuccessResponseCode().value());
     responseWrapper.setContentType(APPLICATION_JSON_VALUE);
+
+    var res = rest.getSuccessResponseBody();
+    for (var map : res.entrySet()) {
+      Faker faker = new Faker(new Locale("in-ID"));
+      if (map.getValue() == null) break;
+      if (map.getValue().getClass().equals(String.class)) {
+        var firstTwo = firstTwo(map.getValue().toString());
+        if (firstTwo.equals("**")) {
+          map.setValue(faker.number().digits(16));
+        }
+      }
+    }
+
     responseWrapper.getWriter().write(ConvertUtil.mapToJson(rest.getSuccessResponseBody()));
     responseWrapper.copyBodyToResponse();
 
     filterChain.doFilter(requestWrapper, responseWrapper);
+  }
+
+  public String firstTwo(String str) {
+    return str.length() < 2 ? str : str.substring(0, 2);
   }
 
   private void failResponse(
