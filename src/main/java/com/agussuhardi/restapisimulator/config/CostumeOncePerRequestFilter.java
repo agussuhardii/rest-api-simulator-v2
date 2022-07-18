@@ -41,11 +41,12 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
       HttpServletResponse httpServletResponse,
       FilterChain filterChain) {
 
-    if (httpServletRequest.getRequestURI().equals("/") //dashboard
-        || httpServletRequest.getRequestURI().equals("/l") //list logs api
-        || httpServletRequest.getRequestURI().equals("/l/v") //get logs api
-        || httpServletRequest.getRequestURI().equals("/r") //list rest api
-        || httpServletRequest.getRequestURI().equals("/r/a") //add form rest
+    if (httpServletRequest.getRequestURI().equals("/") // dashboard
+        || httpServletRequest.getRequestURI().equals("/l") // list logs api
+        || httpServletRequest.getRequestURI().equals("/l/v") // get logs api
+        || httpServletRequest.getRequestURI().equals("/r") // list rest api
+        || httpServletRequest.getRequestURI().equals("/r/a") // add form rest
+        || httpServletRequest.getRequestURI().equals("/favicon.ico") // default
     ) {
       filterChain.doFilter(httpServletRequest, httpServletResponse);
       return;
@@ -138,14 +139,16 @@ public class CostumeOncePerRequestFilter extends OncePerRequestFilter {
     }
 
     // 3.   validate body
-    if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH).contains(requestMethod)) {
-      var requestBody = requestWrapper.getJsonBody();
-      if (!rest.getRequestBody().equals(ConvertUtil.jsonToMap(requestBody))) {
-        this.failResponse(requestWrapper, responseWrapper, filterChain, rest, logs);
-        log.error("invalid body");
-        return;
+    if (!rest.getRequestBody().isEmpty())
+      if (Arrays.asList(HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH)
+          .contains(requestMethod)) {
+        var requestBody = requestWrapper.getJsonBody();
+        if (!rest.getRequestBody().equals(ConvertUtil.jsonToMap(requestBody))) {
+          this.failResponse(requestWrapper, responseWrapper, filterChain, rest, logs);
+          log.error("invalid body");
+          return;
+        }
       }
-    }
 
     logs.setResponseCode(responseWrapper.getStatus());
     logsRepository.save(logs);

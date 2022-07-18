@@ -121,14 +121,14 @@
                                 }
                             },
                             {
-                                title: 'Params',
+                                title: 'Request Params',
                                 data: "params",
                                 render: function (data, type, row, meta) {
-                                    return '<pre>' + JSON.stringify(row.body, undefined, 4) + '</pre>'
+                                    return '<pre>' + JSON.stringify(row.params, undefined, 4) + '</pre>'
                                 }
                             },
                             {
-                                title: 'Body',
+                                title: 'Request Body',
                                 data: "body",
                                 render: function (data, type, row, meta) {
                                     return '<pre>' + JSON.stringify(row.body, undefined, 4) + '</pre>'

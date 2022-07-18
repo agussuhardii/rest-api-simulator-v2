@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 
 /**
  * revisi/log_notif 03/09/21
@@ -25,16 +26,14 @@ public class CustomHttpRequestWrapper extends HttpServletRequestWrapper {
         readInputStreamInStringFormat(
             request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
 
-    //    log.info(
-    //        "request from => {hostname: {}, port: {}, httpMethod: {}, url: {}, requestDate:{},
-    // Body: {}}",
-    //        request.getRemoteHost(),
-    //        request.getServerPort(),
-    //        request.getMethod(),
-    //        request.getRequestURI(),
-    //        LocalDateTime.now(),
-    //        bodyInStringFormat);
-
+    log.info(
+        "request from => {hostname: {}, port: {}, httpMethod: {}, url: {}, requestDate:{}, Body: {}}",
+        request.getRemoteHost(),
+        request.getServerPort(),
+        request.getMethod(),
+        request.getRequestURI(),
+        LocalDateTime.now(),
+        bodyInStringFormat);
   }
 
   public String getJsonBody() {

@@ -84,4 +84,9 @@ public class RestVO implements Serializable {
   public Map<String, Object> getFailResponseBody() {
     return ConvertUtil.jsonToMap(failResponseBody);
   }
+
+  public String getUri() {
+    if (Strings.isNullOrEmpty(this.uri)) return uri;
+    return uri.trim();
+  }
 }
